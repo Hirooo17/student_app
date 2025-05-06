@@ -1,0 +1,45 @@
+name: student_app
+description: A Flutter application for student information management.
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.19.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Firebase
+  firebase_core: ^3.13.0
+  firebase_auth: ^5.5.2
+  cloud_firestore: ^5.6.6
+  
+  # UI
+  cupertino_icons: ^1.0.2
+  flutter_svg: ^2.1.0
+  google_fonts: ^6.2.1
+  lottie: ^3.3.1
+  cached_network_image: ^3.4.1
+  shimmer: ^3.0.0
+  flutter_animate: ^4.5.2
+  
+  # Utils
+  intl: ^0.18.1
+  provider: ^6.0.5
+  shared_preferences: ^2.5.3
+  url_launcher: ^6.3.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.2
+
+flutter:
+  uses-material-design: true
+  
+  # Add assets below if needed
+  # assets:
+  #   - assets/images/
