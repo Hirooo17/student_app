@@ -18,6 +18,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   late final RegistrationController _controller;
   bool _obscurePassword = true;
   bool _isAdmin = false;
+  final AuthService _authService = AuthService();
+  bool _isLoading = false;
 
   // Controllers
   final TextEditingController _nameController = TextEditingController();
@@ -80,8 +82,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     }
   }
 
-  Future<void> _register() async {
-    if (_formKey.currentState!.validate()) {
+ Future<void> _register() async {
+  if (_formKey.currentState!.validate()) {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
       final success = await _controller.register(
         context: context,
         isAdmin: _isAdmin,
@@ -91,49 +98,133 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         email: _emailController.text,
         password: _passwordController.text,
         selectedYear: _selectedYear,
-        course: _courseController.text.isEmpty
-            ? _courseOptions[0]
-            : _courseController.text,
+        course: _courseController.text.isEmpty ? _courseOptions[0] : _courseController.text,
         selectedDepartment: _selectedDepartment,
         adminCode: _adminCodeController.text,
       );
 
       if (success) {
         final user = AuthService().getCurrentUser();
+
         if (user != null) {
           if (_isAdmin) {
-            DocumentSnapshot adminData = await FirebaseFirestore.instance
-                .collection('teachers')
-                .doc(user.uid)
-                .get();
-
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AdminDashboard(
-                  adminData: adminData.data() as Map<String, dynamic>?,
+            bool isAdmin = await _authService.checkIfAdmin(user.uid);
+            if (!isAdmin) {
+              await showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Access Denied', style: TextStyle(color: Colors.red)),
+                  content: const Text('This account was not registered as an admin. Please double-check your admin code.\n\nNote: "PLS IMPROVE IN THIS SUBJECT 🔐"'),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('OK'),
+                    ),
+                  ],
                 ),
-              ),
-            );
+              );
+
+              await AuthService().signOut();
+              setState(() {
+                _isLoading = false;
+              });
+              return;
+            }
+
+            await _navigateToAdminDashboard(user.uid);
           } else {
-            DocumentSnapshot studentData = await FirebaseFirestore.instance
-                .collection('students')
-                .doc(user.uid)
-                .get();
-
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => StudentDashboard(
-                  studentData: studentData.data() as Map<String, dynamic>,
+            bool isAdmin = await _authService.checkIfAdmin(user.uid);
+            if (isAdmin) {
+              // Show cute confirmation dialog
+              await showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Admin Account Detected ✨'),
+                  content: const Text(
+                      'You registered as a student but your account has admin privileges. Would you like to go to the admin dashboard instead?'),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  actions: [
+                    TextButton(
+                      onPressed: () async {
+                        Navigator.pop(context);
+                        await _navigateToAdminDashboard(user.uid);
+                      },
+                      child: const Text('Yes'),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        Navigator.pop(context);
+                        await _navigateToStudentDashboard(user.uid);
+                      },
+                      child: const Text('No'),
+                    ),
+                  ],
                 ),
-              ),
-            );
+              );
+            } else {
+              await _navigateToStudentDashboard(user.uid);
+            }
           }
         }
       }
+    } catch (e) {
+      await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Registration Error 😢', style: TextStyle(color: Colors.red)),
+          content: Text('Oops! Something went wrong while creating your account:\n${e.toString()}'),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
+}
+
+Future<void> _navigateToStudentDashboard(String uid) async {
+  DocumentSnapshot studentData =
+      await FirebaseFirestore.instance.collection('students').doc(uid).get();
+      
+  // Create a map with the student data
+  Map<String, dynamic> studentDataMap = studentData.data() as Map<String, dynamic>;
+  
+  // Add the uid to the student data map explicitly
+  studentDataMap['uid'] = uid;
+
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(
+      builder: (context) => StudentDashboard(
+        studentData: studentDataMap,
+      ),
+    ),
+  );
+}
+
+  Future<void> _navigateToAdminDashboard(String uid) async {
+    DocumentSnapshot adminData =
+        await FirebaseFirestore.instance.collection('teachers').doc(uid).get();
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AdminDashboard(
+          adminData: adminData.data() as Map<String, dynamic>?,
+        ),
+      ),
+    );
+  }
+  
 
   @override
   Widget build(BuildContext context) {

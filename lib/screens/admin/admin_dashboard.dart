@@ -1,27 +1,26 @@
-// screens/admin/admin_dashboard.dart
-// ignore_for_file: prefer_const_constructors, deprecated_member_use, use_key_in_widget_constructors
-
+// screens/teacher/teacher_dashboard.dart
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:student_app/screens/admin/Homework%20Teacher/create_homework.dart';
+import 'package:student_app/screens/admin/Grades/grade_input_screen.dart';
 import 'package:student_app/screens/admin/Homework%20Teacher/home_work_list_screen.dart';
 import 'package:student_app/services/auth_service.dart';
 import 'package:student_app/services/database_service.dart';
 import 'package:student_app/screens/admin/student_details_screen.dart';
+
 import 'package:student_app/screens/authentication/login_screen.dart';
 import 'package:student_app/utils/app_theme.dart';
 
 class AdminDashboard extends StatefulWidget {
   final Map<String, dynamic>? adminData;
 
-  // ignore: prefer_const_constructors_in_immutables
-  AdminDashboard({this.adminData});
+  const AdminDashboard({Key? key, this.adminData}) : super(key: key);
+
   @override
-  _AdminDashboardState createState() => _AdminDashboardState();
+  _TeacherDashboardState createState() => _TeacherDashboardState();
 }
 
-class _AdminDashboardState extends State<AdminDashboard> {
+class _TeacherDashboardState extends State<AdminDashboard> {
   final DatabaseService _databaseService = DatabaseService();
   final AuthService _authService = AuthService();
   final TextEditingController _searchController = TextEditingController();
@@ -80,16 +79,16 @@ class _AdminDashboardState extends State<AdminDashboard> {
         title: _isSearching
             ? TextField(
                 controller: _searchController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Search by name...',
                   hintStyle: TextStyle(color: Colors.white70),
                   border: InputBorder.none,
                 ),
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
                 autofocus: true,
                 onChanged: _performSearch,
               )
-            : Text('Admin Dashboard'),
+            : const Text('Teacher Dashboard'),
         actions: [
           IconButton(
             icon: Icon(_isSearching ? Icons.close : Icons.search),
@@ -106,15 +105,15 @@ class _AdminDashboardState extends State<AdminDashboard> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.exit_to_app),
+            icon: const Icon(Icons.exit_to_app),
             onPressed: _confirmSignOut,
           ),
         ],
       ),
       body: Column(
         children: [
-          // Admin Header
-          _buildAdminHeader(),
+          // Teacher Header
+          _buildTeacherHeader(),
 
           // Filter Buttons
           _buildFilterButtons(),
@@ -125,7 +124,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
               stream: _studentsStream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 if (snapshot.hasError) {
@@ -142,7 +141,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                           size: 64,
                           color: AppTheme.textSecondaryColor.withOpacity(0.5),
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         Text(
                           _isSearching
                               ? 'No students found matching your search'
@@ -158,7 +157,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 }
 
                 return ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   itemCount: snapshot.data!.docs.length,
                   itemBuilder: (context, index) {
                     DocumentSnapshot doc = snapshot.data!.docs[index];
@@ -167,15 +166,15 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
                     return CustomWidgets.modernCard(
                       padding: EdgeInsets.zero,
-                      margin: EdgeInsets.only(bottom: 12),
+                      margin: const EdgeInsets.only(bottom: 12),
                       child: ListTile(
-                        contentPadding: EdgeInsets.all(16),
+                        contentPadding: const EdgeInsets.all(16),
                         leading: CircleAvatar(
                           radius: 28,
                           backgroundColor: AppTheme.primaryLightColor,
                           child: Text(
                             (data['name'] ?? 'S')[0].toUpperCase(),
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -184,7 +183,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                         ),
                         title: Text(
                           data['name'] ?? 'Student',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
@@ -192,10 +191,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(height: 4),
+                            const SizedBox(height: 4),
                             Text(
                                 '${data['course'] ?? 'N/A'} - Year ${data['year'] ?? 'N/A'}'),
-                            SizedBox(height: 2),
+                            const SizedBox(height: 2),
                             Text(
                               data['email'] ?? 'No email',
                               style: TextStyle(
@@ -205,28 +204,57 @@ class _AdminDashboardState extends State<AdminDashboard> {
                             ),
                           ],
                         ),
-                        trailing: Container(
-                          decoration: BoxDecoration(
-                            color: AppTheme.primaryColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.visibility,
-                              color: AppTheme.primaryColor,
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => StudentDetailsScreen(
-                                    studentId: doc.id,
-                                    studentData: data,
-                                  ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                color: AppTheme.primaryColor.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.visibility,
+                                  color: AppTheme.primaryColor,
                                 ),
-                              );
-                            },
-                          ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => StudentDetailsScreen(
+                                        studentId: doc.id,
+                                        studentData: data,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: AppTheme.primaryColor.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.grade,
+                                  color: AppTheme.primaryColor,
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => GradeInputScreen(
+                                        studentId: doc.id,
+                                        studentName: data['name'] ?? 'Student',
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                         isThreeLine: true,
                       ),
@@ -244,55 +272,50 @@ class _AdminDashboardState extends State<AdminDashboard> {
             final user = FirebaseAuth.instance.currentUser;
             if (user == null) return;
 
-            DocumentSnapshot adminSnapshot = await FirebaseFirestore.instance
+            DocumentSnapshot teacherSnapshot = await FirebaseFirestore.instance
                 .collection('teachers')
                 .doc(user.uid)
                 .get();
 
-            if (adminSnapshot.exists) {
-              Map<String, dynamic> adminData = {
+            if (teacherSnapshot.exists) {
+              Map<String, dynamic> teacherData = {
                 'uid': user.uid,
-                ...adminSnapshot.data() as Map<String, dynamic>,
+                ...teacherSnapshot.data() as Map<String, dynamic>,
               };
 
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => HomeworkListScreen(
-                    adminData: adminData,
+                    adminData: teacherData,
                   ),
                 ),
               );
             } else {
-              // handle case where teacher document is missing
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Admin data not found')),
+                const SnackBar(content: Text('Teacher data not found')),
               );
             }
           } catch (e) {
-            print('Error fetching admin data: $e');
+            print('Error fetching teacher data: $e');
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Failed to fetch admin data')),
+              const SnackBar(content: Text('Failed to fetch teacher data')),
             );
           }
         },
         backgroundColor: AppTheme.primaryColor,
-        icon: Icon(Icons.view_agenda),
-        label: Text('See Homeworks'),
+        icon: const Icon(Icons.view_agenda),
+        label: const Text('See Homeworks'),
       ),
-      
-      
-
-      
     );
   }
 
-  Widget _buildAdminHeader() {
+  Widget _buildTeacherHeader() {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppTheme.primaryColor,
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(24),
           bottomRight: Radius.circular(24),
         ),
@@ -306,7 +329,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 radius: 24,
                 backgroundColor: Colors.white,
                 child: Text(
-                  widget.adminData?['name']?.toString().substring(0, 1) ?? 'A',
+                  widget.adminData?['name']?.toString().substring(0, 1) ?? 'T',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -314,14 +337,14 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   ),
                 ),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.adminData?['name'] ?? 'Admin',
-                      style: TextStyle(
+                      widget.adminData?['name'] ?? 'Teacher',
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -329,7 +352,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
-                      widget.adminData?['department'] ?? 'Administrator',
+                      widget.adminData?['department'] ?? 'Teacher',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.white.withOpacity(0.9),
@@ -339,9 +362,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   ],
                 ),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(16),
@@ -349,15 +372,15 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.people,
                       color: Colors.white,
                       size: 18,
                     ),
-                    SizedBox(width: 4),
+                    const SizedBox(width: 4),
                     Text(
                       '$_totalStudents Students',
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
                       ),
@@ -375,7 +398,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
   Widget _buildFilterButtons() {
     return Container(
       height: 50,
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
@@ -394,7 +417,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
     final isSelected = _filterBy == label;
 
     return Container(
-      margin: EdgeInsets.only(right: 10, top: 8, bottom: 8),
+      margin: const EdgeInsets.only(right: 10, top: 8, bottom: 8),
       child: FilterChip(
         label: Text(label),
         selected: isSelected,
@@ -407,7 +430,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           color: isSelected ? Colors.white : AppTheme.textPrimaryColor,
           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
         ),
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
       ),
     );
   }
@@ -416,11 +439,11 @@ class _AdminDashboardState extends State<AdminDashboard> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Confirm Logout'),
-        content: Text('Are you sure you want to log out from the admin panel?'),
+        title: const Text('Confirm Logout'),
+        content: const Text('Are you sure you want to log out?'),
         actions: [
           TextButton(
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
             onPressed: () => Navigator.pop(context),
           ),
           CustomWidgets.loadingButton(
@@ -443,7 +466,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
   Future<void> _signOut() async {
     await _authService.signOut();
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => LoginScreen()),
+      MaterialPageRoute(builder: (context) =>  LoginScreen()),
       (route) => false,
     );
   }
