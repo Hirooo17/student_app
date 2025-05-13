@@ -2,11 +2,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:student_app/screens/admin/Grades/grade_input_screen.dart';
-import 'package:student_app/screens/admin/Homework%20Teacher/home_work_list_screen.dart';
+import 'package:student_app/screens/teacher/Grades/grade_input_screen.dart';
+import 'package:student_app/screens/teacher/Homework%20Teacher/home_work_list_screen.dart';
 import 'package:student_app/services/auth_service.dart';
 import 'package:student_app/services/database_service.dart';
-import 'package:student_app/screens/admin/student_details_screen.dart';
+import 'package:student_app/screens/teacher/student_details_screen.dart';
 
 import 'package:student_app/screens/authentication/login_screen.dart';
 import 'package:student_app/utils/app_theme.dart';

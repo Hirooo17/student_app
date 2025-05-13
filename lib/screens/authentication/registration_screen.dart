@@ -5,7 +5,7 @@ import 'package:student_app/controllers/registration_controller.dart';
 import 'package:student_app/services/auth_service.dart';
 import 'package:student_app/services/database_service.dart';
 import 'package:student_app/screens/student/profile/student_dashboard.dart';
-import 'package:student_app/screens/admin/admin_dashboard.dart';
+import 'package:student_app/screens/teacher/admin_dashboard.dart';
 import 'package:student_app/utils/app_theme.dart';
 
 class RegistrationScreen extends StatefulWidget {

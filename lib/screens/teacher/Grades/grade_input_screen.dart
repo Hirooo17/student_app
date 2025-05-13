@@ -1,7 +1,7 @@
 // screens/teacher/grade_input_screen.dart
 import 'package:flutter/material.dart';
 import 'package:student_app/models/Grade.model.dart';
-import 'package:student_app/screens/admin/Grades/grade_viewer.dart';
+import 'package:student_app/screens/teacher/Grades/grade_viewer.dart';
 import 'package:student_app/services/Grades/grade_service.dart';
 import 'package:student_app/services/auth_service.dart';
 import 'package:student_app/services/database_service.dart';

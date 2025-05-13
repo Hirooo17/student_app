@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lottie/lottie.dart';
-import 'package:student_app/screens/admin/admin_dashboard.dart';
+import 'package:student_app/screens/teacher/admin_dashboard.dart';
 import 'package:student_app/screens/authentication/registration_screen.dart';
 import 'package:student_app/screens/super_user/login.dart';
 import 'package:student_app/screens/super_user/register.dart';

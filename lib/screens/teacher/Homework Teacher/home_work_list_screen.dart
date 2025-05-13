@@ -3,8 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:student_app/screens/admin/Homework%20Teacher/create_homework.dart';
-import 'package:student_app/screens/admin/Homework%20Teacher/homework_details.dart';
+import 'package:student_app/screens/teacher/Homework%20Teacher/create_homework.dart';
+import 'package:student_app/screens/teacher/Homework%20Teacher/homework_details.dart';
 import 'package:student_app/services/Homework/home_work_service.dart';
 
 import 'package:student_app/utils/app_theme.dart';
