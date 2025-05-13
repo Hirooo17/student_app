@@ -32,6 +32,7 @@ dependencies:
   provider: ^6.0.5
   shared_preferences: ^2.5.3
   url_launcher: ^6.3.1
+  flutter_launcher_icons: ^0.14.3
 
 dev_dependencies:
   flutter_test:
@@ -40,6 +41,14 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon.png"  # Path to your icon file
+  # Optional adaptive icon config for Android:
+  android_adaptive_icon:
+    
   
   # Add assets below if needed
   # assets:
