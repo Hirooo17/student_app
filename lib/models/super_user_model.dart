@@ -1,30 +1,26 @@
-// models/superuser_model.dart
-import 'package:cloud_firestore/cloud_firestore.dart';
-
+// models/super_user_model.dart
 class SuperUser {
-  final String id;
+  final String uid;
   final String name;
   final String email;
   final String role;
   final DateTime createdAt;
 
   SuperUser({
-    required this.id,
+    required this.uid,
     required this.name,
     required this.email,
-    this.role = 'superuser',
+    required this.role,
     required this.createdAt,
   });
 
-  factory SuperUser.fromMap(Map<String, dynamic> data, String id) {
+  factory SuperUser.fromMap(Map<String, dynamic> data, String uid) {
     return SuperUser(
-      id: id,
+      uid: uid,
       name: data['name'] ?? '',
       email: data['email'] ?? '',
       role: data['role'] ?? 'superuser',
-      createdAt: data['createdAt'] != null 
-          ? (data['createdAt'] as Timestamp).toDate() 
-          : DateTime.now(),
+      createdAt: data['createdAt']?.toDate() ?? DateTime.now(),
     );
   }
 
@@ -32,7 +28,7 @@ class SuperUser {
     return {
       'name': name,
       'email': email,
-      'role': role,
+      'role': 'superuser',
       'createdAt': createdAt,
     };
   }

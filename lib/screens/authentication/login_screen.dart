@@ -7,8 +7,11 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lottie/lottie.dart';
 import 'package:student_app/screens/admin/admin_dashboard.dart';
 import 'package:student_app/screens/authentication/registration_screen.dart';
+import 'package:student_app/screens/super_user/login.dart';
+import 'package:student_app/screens/super_user/register.dart';
 import 'package:student_app/screens/student/profile/student_dashboard.dart';
 import 'package:student_app/services/auth_service.dart';
+import 'package:student_app/services/database_service.dart';
 import 'package:student_app/utils/app_theme.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -22,9 +25,11 @@ class _LoginScreenState extends State<LoginScreen>
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final AuthService _authService = AuthService();
+  final DatabaseService _databaseService = DatabaseService();
   bool _isLoading = false;
   bool _obscurePassword = true;
   bool _isAdmin = false; // Added to track if user is logging in as admin
+  bool _isSuperUser = false;
   late AnimationController _animationController;
 
   @override
@@ -256,6 +261,39 @@ class _LoginScreenState extends State<LoginScreen>
 
                       const SizedBox(height: 40),
 
+                      const SizedBox(height: 20),
+
+                      Center(
+                        child: Text(
+                          'Or',
+                          style: AppTheme.bodyMedium
+                              .copyWith(color: AppTheme.textSecondaryColor),
+                        ),
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      TextButton.icon(
+                        style: TextButton.styleFrom(
+                          foregroundColor: AppTheme.primaryColor,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SuperUserRegistrationScreen()),
+                          );
+                        },
+                        icon: Icon(Icons.admin_panel_settings_outlined),
+                        label: Text(
+                          'Login as Super User',
+                          style: AppTheme.bodyMedium
+                              .copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+
                       // Only show registration option for students
                       if (!_isAdmin)
                         Row(
@@ -398,25 +436,26 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   // Fix for the _navigateToStudentDashboard method in login_screen.dart
-Future<void> _navigateToStudentDashboard(String uid) async {
-  DocumentSnapshot studentData =
-      await FirebaseFirestore.instance.collection('students').doc(uid).get();
-      
-  // Create a map with the student data
-  Map<String, dynamic> studentDataMap = studentData.data() as Map<String, dynamic>;
-  
-  // Add the uid to the student data map explicitly
-  studentDataMap['uid'] = uid;
+  Future<void> _navigateToStudentDashboard(String uid) async {
+    DocumentSnapshot studentData =
+        await FirebaseFirestore.instance.collection('students').doc(uid).get();
 
-  Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(
-      builder: (context) => StudentDashboard(
-        studentData: studentDataMap,
+    // Create a map with the student data
+    Map<String, dynamic> studentDataMap =
+        studentData.data() as Map<String, dynamic>;
+
+    // Add the uid to the student data map explicitly
+    studentDataMap['uid'] = uid;
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => StudentDashboard(
+          studentData: studentDataMap,
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   Future<void> _navigateToAdminDashboard(String uid) async {
     DocumentSnapshot adminData =

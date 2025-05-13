@@ -1,7 +1,7 @@
 // controllers/registration_controller.dart
 import 'package:flutter/material.dart';
-import 'package:student_app/services/auth_service.dart';
-import 'package:student_app/services/database_service.dart';
+import '../services/auth_service.dart';
+import '../services/database_service.dart';
 
 class RegistrationController {
   final AuthService _authService;
@@ -27,6 +27,7 @@ class RegistrationController {
     String? course,
     String? selectedDepartment,
     String? adminCode,
+    bool isVerified = false, // Default to false for new registrations
   }) async {
     if (isLoading) return false;
 
@@ -63,6 +64,7 @@ class RegistrationController {
             address: address,
             email: email,
             department: selectedDepartment!,
+            isVerified: isVerified, // Add isVerified parameter
           );
           
           // Add the user to the 'admins' collection
@@ -81,6 +83,7 @@ class RegistrationController {
             address: address,
             subjects: [],
             email: email,
+            isVerified: isVerified, // Add isVerified parameter
           );
         }
         return true;
