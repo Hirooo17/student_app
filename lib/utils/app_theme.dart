@@ -4,16 +4,16 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // Colors
-  static const Color primaryColor = Color(0xFF5C6BC0);
-  static const Color primaryDarkColor = Color(0xFF3949AB);
-  static const Color primaryLightColor = Color(0xFF8E99F3);
-  static const Color accentColor = Color(0xFFFF7043);
-  static const Color backgroundColor = Color(0xFFF5F7FA);
-  static const Color cardColor = Colors.white;
-  static const Color textPrimaryColor = Color(0xFF263238);
-  static const Color textSecondaryColor = Color(0xFF607D8B);
-  static const Color errorColor = Color(0xFFEF5350);
-  static const Color successColor = Color(0xFF66BB6A);
+static const Color primaryColor = Color(0xFFE57373);      // Light red (kept as is)
+static const Color primaryDarkColor = Color(0xFFD32F2F);  // Dark red (was blue, now matches accent)
+static const Color primaryLightColor = Color(0xFFFFCDD2); // Light pink/red (was light blue, now matches secondary)
+static const Color accentColor = Color(0xFFD32F2F);       // Dark red (was orange)
+static const Color backgroundColor = Color(0xFFFFF5F5);   // Very light pink (kept as is)
+static const Color cardColor = Colors.white;              // White (kept as is)
+static const Color textPrimaryColor = Color(0xFF263238);  // Dark gray (kept as is)
+static const Color textSecondaryColor = Color(0xFF607D8B); // Medium gray (kept as is)
+static const Color errorColor = Color(0xFFEF5350);        // Red (kept as is)
+static const Color successColor = Color(0xFF66BB6A);      // Green (kept as is)
   
 
 

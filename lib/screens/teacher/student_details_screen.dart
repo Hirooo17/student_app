@@ -24,9 +24,9 @@ class _StudentDetailsScreenState extends State<StudentDetailsScreen> {
   final List<String> _earistCourses = ['BSIT', 'BSCS', 'BSCE', 'BEED', 'BSA'];
   
   // Updated color scheme for a modern and cute look
-  final Color _primaryColor = const Color(0xFFE53935); // Brighter light red
-  final Color _secondaryColor = const Color(0xFFFFCDD2); // Light pink
-  final Color _accentColor = const Color(0xFFFFF1F0); // Very light pink background
+   final Color _primaryColor = const Color(0xFFE57373);
+  final Color _secondaryColor = const Color(0xFFFFCDD2);
+  final Color _accentColor = const Color(0xFFD32F2F);
   final Color _textColor = const Color(0xFF424242); // Dark grey for text
 
   @override
